@@ -19,6 +19,7 @@ function fresh() {
     sessions: [],
     timer: null,
     companion: false,
+    closedAt: null,
   };
 }
 
@@ -64,6 +65,7 @@ export const store = {
         : [],
       timer: raw.timer && typeof raw.timer === "object" ? raw.timer : null,
       companion: raw.companion === true,
+      closedAt: typeof raw.closedAt === "string" ? raw.closedAt : null,
     };
 
     // 换了一天：没写完的作业接着留着，写完的清掉

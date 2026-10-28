@@ -6,6 +6,11 @@
 <title>小猫陪小鱼写作业</title>
 <meta name="description" content="一个安静的夜晚书桌。小猫趴在台灯旁边，陪着写作业；它只在你开始和结束的时候，轻轻出声。">
 <meta name="theme-color" content="#100d1c">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="小猫陪读">
+<link rel="canonical" href="https://aduoer.github.io/xiaoyu-study-cat/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="小猫陪小鱼写作业">
 <meta property="og:description" content="小猫趴在桌角陪你写作业，不催你，也不吵你。">
@@ -160,7 +165,7 @@
 
         <!-- 墙 -->
         <rect width="1200" height="520" fill="url(#gWall)"/>
-        <ellipse cx="300" cy="400" rx="360" ry="280" fill="url(#gWarmGlow)" opacity=".75"/>
+        <ellipse class="wall-glow" cx="300" cy="400" rx="360" ry="280" fill="url(#gWarmGlow)" opacity=".75"/>
         <ellipse cx="980" cy="200" rx="330" ry="260" fill="url(#gCoolGlow)"/>
 
         <!-- 小灯串 -->
@@ -320,10 +325,14 @@
             </g>
 
             <g class="cat-head">
-              <path d="M-54-186-46-246-8-206Z" fill="#f3ad6b"/>
-              <path d="M54-186 46-246 8-206Z" fill="#f3ad6b"/>
-              <path d="M-45-196-41-228-20-208Z" fill="#f6aeaa"/>
-              <path d="M45-196 41-228 20-208Z" fill="#f6aeaa"/>
+              <g class="ear-left">
+                <path d="M-54-186-46-246-8-206Z" fill="#f3ad6b"/>
+                <path d="M-45-196-41-228-20-208Z" fill="#f6aeaa"/>
+              </g>
+              <g class="ear-right">
+                <path d="M54-186 46-246 8-206Z" fill="#f3ad6b"/>
+                <path d="M45-196 41-228 20-208Z" fill="#f6aeaa"/>
+              </g>
               <path d="M-56-168c0-42 24-60 56-60s56 18 56 60c0 32-26 52-56 52s-56-20-56-52Z" fill="url(#gFurHead)"/>
               <path d="M-56-168c0-42 24-60 56-60s56 18 56 60c0 32-26 52-56 52s-56-20-56-52Z" fill="none" stroke="#d98a4e" stroke-opacity=".3" stroke-width="2"/>
               <g stroke="#e0894c" stroke-width="7" stroke-linecap="round" opacity=".8">
@@ -400,7 +409,10 @@
 
       <div class="timer-foot">
         <p class="timer-hint" id="timerHint">点开始，小猫就趴下；时间到了它才轻轻叫你。</p>
-        <button class="link" id="companionBtn" type="button">今晚不计时，只让小猫陪着</button>
+        <div class="foot-links">
+          <button class="link" id="companionBtn" type="button">今晚不计时，只让小猫陪着</button>
+          <button class="link" id="closeBtn" type="button" hidden>今晚收工 · 晚安</button>
+        </div>
       </div>
     </section>
 

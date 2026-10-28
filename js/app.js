@@ -27,6 +27,7 @@ const el = {
   trackFill: $("#trackFill"),
   timerHint: $("#timerHint"),
   companionBtn: $("#companionBtn"),
+  closeBtn: $("#closeBtn"),
 
   taskList: $("#taskList"),
   taskEmpty: $("#taskEmpty"),
@@ -56,6 +57,7 @@ const ui = {
   round: 1,
   tickId: 0,
   bubbleId: 0,
+  wakeId: 0,
   wake: null,
   audio: null,
 };
@@ -98,10 +100,10 @@ function say(text, ms = 9000) {
 }
 
 function updateTitle() {
-  const running = ui.mode === "focus" || ui.mode === "rest";
-  const t = running
-    ? `${fmtTime(ui.remaining)} · ${nameOf("cat")}陪${nameOf("fish")}写作业`
-    : `${nameOf("cat")}陪${nameOf("fish")}写作业`;
+  let t = `${nameOf("cat")}陪${nameOf("fish")}写作业`;
+  if (ui.mode === "focus" || ui.mode === "rest") t = `${fmtTime(ui.remaining)} · ${t}`;
+  else if (ui.mode === "night") t = `晚安 · ${t}`;
+
   if (t !== lastTitle) {
     document.title = t;
     lastTitle = t;
@@ -156,6 +158,9 @@ function chime(kind) {
   } else if (kind === "restEnd") {
     tone(523.25, 0, 1.5, 0.04);
     tone(783.99, 0.2, 1.6, 0.03);
+  } else if (kind === "night") {
+    tone(523.25, 0, 2.2, 0.04);
+    tone(392.0, 0.3, 2.6, 0.034);
   } else if (kind === "tick") {
     tone(1046.5, 0, 0.4, 0.02);
   }
@@ -224,11 +229,20 @@ const MODE = {
     live: false,
     asleep: true,
   },
+  night: {
+    phase: "小猫把灯关了",
+    hint: "明天见。",
+    start: "还不想睡？再写一轮",
+    stop: null,
+    live: false,
+    asleep: true,
+  },
 };
 
 function renderClock() {
   let text;
   if (ui.mode === "companion") text = "∞";
+  else if (ui.mode === "night") text = "晚安";
   else if (ui.mode === "idle") text = fmtTime(store.data.settings.focus * 60000);
   else text = fmtTime(ui.remaining);
 
@@ -248,13 +262,25 @@ function renderProgress() {
 function applyMode() {
   const m = ui.mode;
   const cfg = MODE[m];
+  const today = store.todayCount();
+  const wasAsleep = el.scene.dataset.cat === "sleep";
 
   el.scene.dataset.cat = cfg.asleep ? "sleep" : "awake";
+  if (wasAsleep && !cfg.asleep) {
+    clearTimeout(ui.wakeId);
+    el.cat.classList.remove("is-waking");
+    void el.cat.getBoundingClientRect();
+    el.cat.classList.add("is-waking");
+    ui.wakeId = setTimeout(() => el.cat.classList.remove("is-waking"), 1500);
+  }
   el.scene.classList.toggle("is-focus", cfg.asleep);
+  el.scene.classList.toggle("is-night", m === "night");
   el.timerCard.classList.toggle("is-live", cfg.live);
   el.timerCard.classList.toggle("is-rest", m === "rest");
+  el.timerCard.classList.toggle("is-night", m === "night");
   el.clock.classList.toggle("is-rest", m === "rest");
-  el.clock.classList.toggle("is-static", m === "companion");
+  el.clock.classList.toggle("is-static", m === "companion" || m === "night");
+  el.clock.classList.toggle("is-night", m === "night");
 
   el.scenePill.classList.toggle("is-on", cfg.asleep);
   el.scenePillText.textContent =
@@ -262,26 +288,34 @@ function applyMode() {
       ? `${nameOf("cat")}还在 · 暂停中`
       : m === "companion"
         ? "陪读中 · 不打扰"
-        : `${nameOf("cat")}已趴下 · 不打扰`;
+        : m === "night"
+          ? `${nameOf("cat")}睡了 · 晚安`
+          : `${nameOf("cat")}已趴下 · 不打扰`;
 
   el.phaseLabel.textContent = cfg.phase;
   el.roundLabel.textContent =
     m === "idle"
-      ? store.todayCount() > 0
-        ? `今晚已完成 ${store.todayCount()} 轮`
+      ? today > 0
+        ? `今晚已完成 ${today} 轮`
         : ""
       : m === "rest"
         ? "小猫在等你"
         : m === "companion"
           ? "不计时"
-          : `第 ${ui.round} 轮`;
+          : m === "night"
+            ? `今晚 ${today} 轮 · 连续 ${store.streak()} 天`
+            : `第 ${ui.round} 轮`;
 
-  el.timerHint.textContent = cfg.hint;
+  el.timerHint.textContent =
+    m === "night" ? `今晚的小鱼都在缸里了，一共 ${today} 条。明天见。` : cfg.hint;
   el.startBtn.textContent = cfg.start;
+  el.startBtn.classList.toggle("primary", m !== "night");
+  el.startBtn.classList.toggle("ghost", m === "night");
   el.stopBtn.textContent = cfg.stop || "结束";
   el.stopBtn.hidden = !cfg.stop;
   el.durations.hidden = m !== "idle";
-  el.companionBtn.hidden = m !== "idle";
+  el.companionBtn.hidden = m !== "idle" || today > 0;
+  el.closeBtn.hidden = !((m === "idle" || m === "rest") && today > 0);
 
   el.durations.querySelectorAll("button").forEach((b) => {
     b.classList.toggle("on", Number(b.dataset.min) === store.data.settings.focus);
@@ -324,6 +358,7 @@ function startFocus() {
   ui.round = store.todayCount() + 1;
 
   store.data.companion = false;
+  store.data.closedAt = null;
   store.data.timer = { kind: "focus", endsAt: ui.endsAt, total, round: ui.round };
   store.save();
 
@@ -481,10 +516,29 @@ function startCompanion() {
   ui.endsAt = 0;
   ui.remaining = 0;
   store.data.companion = true;
+  store.data.closedAt = null;
   store.data.timer = null;
   store.save();
   applyMode();
   say(fmt(pick(copy.companion)), 10000);
+}
+
+function startNight() {
+  if (store.todayCount() === 0) return;
+  stopTick();
+  releaseWakeLock();
+
+  ui.mode = "night";
+  ui.endsAt = 0;
+  ui.remaining = 0;
+  store.data.timer = null;
+  store.data.companion = false;
+  store.data.closedAt = dayKey();
+  store.save();
+
+  applyMode();
+  chime("night");
+  say(fmt(pick(copy.night)), 15000);
 }
 
 function onStart() {
@@ -500,6 +554,7 @@ function onStart() {
       break;
     case "rest":
     case "companion":
+    case "night":
       startFocus();
       break;
   }
@@ -731,53 +786,55 @@ function fitScene() {
 function restoreTimer() {
   const t = store.data.timer;
 
-  if (store.data.companion && !t) {
+  if (t && Number.isFinite(t.total)) {
+    if (t.kind === "paused") {
+      ui.mode = "paused";
+      ui.total = t.total;
+      ui.remaining = Math.max(0, t.remaining || 0);
+      ui.round = t.round || 1;
+      applyMode();
+      return true;
+    }
+
+    if (t.kind === "focus" || t.kind === "rest") {
+      const remain = t.endsAt - Date.now();
+
+      if (remain > 0) {
+        ui.mode = t.kind;
+        ui.total = t.total;
+        ui.remaining = remain;
+        ui.endsAt = t.endsAt;
+        ui.round = t.round || 1;
+        applyMode();
+        startTick();
+        if (t.kind === "focus") acquireWakeLock();
+        return true;
+      }
+
+      if (t.kind === "focus" && -remain < 2 * 3600 * 1000) {
+        ui.mode = "focus";
+        ui.total = t.total;
+        ui.remaining = 0;
+        ui.round = t.round || 1;
+        finishFocus(true, -remain < 10 * 60 * 1000);
+        return true;
+      }
+    }
+
+    store.data.timer = null;
+    store.save();
+  }
+
+  if (store.data.companion) {
     ui.mode = "companion";
     applyMode();
     return true;
   }
 
-  if (!t || !Number.isFinite(t.total)) {
-    ui.mode = "idle";
-    applyMode();
-    return false;
-  }
-
-  if (t.kind === "paused") {
-    ui.mode = "paused";
-    ui.total = t.total;
-    ui.remaining = Math.max(0, t.remaining || 0);
-    ui.round = t.round || 1;
+  if (store.data.closedAt === dayKey()) {
+    ui.mode = "night";
     applyMode();
     return true;
-  }
-
-  if (t.kind === "focus" || t.kind === "rest") {
-    const remain = t.endsAt - Date.now();
-
-    if (remain > 0) {
-      ui.mode = t.kind;
-      ui.total = t.total;
-      ui.remaining = remain;
-      ui.endsAt = t.endsAt;
-      ui.round = t.round || 1;
-      applyMode();
-      startTick();
-      if (t.kind === "focus") acquireWakeLock();
-      return true;
-    }
-
-    if (t.kind === "focus" && -remain < 2 * 3600 * 1000) {
-      ui.mode = "focus";
-      ui.total = t.total;
-      ui.remaining = 0;
-      ui.round = t.round || 1;
-      finishFocus(true, -remain < 10 * 60 * 1000);
-      return true;
-    }
-
-    store.data.timer = null;
-    store.save();
   }
 
   ui.mode = "idle";
@@ -789,6 +846,7 @@ function bind() {
   el.startBtn.addEventListener("click", onStart);
   el.stopBtn.addEventListener("click", stopCurrent);
   el.companionBtn.addEventListener("click", startCompanion);
+  el.closeBtn.addEventListener("click", startNight);
 
   el.durations.addEventListener("click", (e) => {
     const btn = e.target.closest("button[data-min]");
