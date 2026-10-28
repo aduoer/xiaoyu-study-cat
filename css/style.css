@@ -660,6 +660,10 @@ svg {
   list-style: none;
 }
 
+.task-list:empty {
+  display: none;
+}
+
 .task-list li {
   display: flex;
   align-items: center;
@@ -748,7 +752,12 @@ li:hover .del,
 }
 
 .task-empty {
-  margin: 14px 0;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 18px 0;
   font-size: 13px;
   line-height: 1.75;
   text-align: center;
@@ -863,6 +872,99 @@ li:hover .del,
   margin-top: auto;
   padding-top: 14px;
   border-top: 1px dashed rgba(255, 240, 220, 0.08);
+}
+
+.care {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  margin-top: 12px;
+}
+
+.food-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.food-chip svg {
+  width: 17px;
+  height: 17px;
+  color: var(--gold);
+  fill: currentColor;
+}
+
+.food-chip b {
+  display: inline-block;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--gold);
+  font-variant-numeric: tabular-nums;
+}
+
+.food-chip b.is-pop {
+  animation: foodPop 0.42s ease;
+}
+
+@keyframes foodPop {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.35);
+  }
+}
+
+.care-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.mini-btn {
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  color: var(--cream);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--line);
+  transition: background 0.2s ease, filter 0.2s ease, color 0.2s ease;
+}
+
+.mini-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.mini-btn.gold {
+  color: #3a2412;
+  font-weight: 600;
+  background: linear-gradient(180deg, #ffd99d, #f6b15d);
+  border-color: transparent;
+  box-shadow: 0 6px 14px -8px rgba(255, 170, 80, 0.65);
+}
+
+.mini-btn.gold:hover {
+  filter: brightness(1.05);
+}
+
+.mini-btn.gold.is-empty {
+  color: var(--muted2);
+  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--line);
+  box-shadow: none;
+}
+
+.care-note {
+  margin: 7px 0 0;
+  font-size: 10.5px;
+  letter-spacing: 0.03em;
+  color: var(--muted2);
 }
 
 .week-label {
@@ -1368,10 +1470,125 @@ li:hover .del,
 
 .cat {
   cursor: pointer;
+  touch-action: pan-y;
+  -webkit-touch-callout: none;
 }
 
 .scene.is-focus .cat {
   cursor: default;
+}
+
+/* 摸一摸 */
+.scene.is-petting .cat-head {
+  transform: translateY(1px) rotate(2.6deg);
+}
+
+.scene[data-cat="sleep"].is-petting .cat-head {
+  transform: translateY(3px) rotate(-1.2deg);
+}
+
+.scene.is-petting .eyes-open {
+  opacity: 0;
+}
+
+.scene.is-petting .eyes-closed {
+  opacity: 1;
+}
+
+.scene.is-petting .tail-sway {
+  animation: tailHappy 1.1s ease-in-out infinite;
+}
+
+.scene[data-cat="sleep"].is-petting .tail-sway {
+  animation: tailHappy 1.6s ease-in-out infinite;
+}
+
+@keyframes tailHappy {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-4deg);
+  }
+}
+
+.pet-hearts,
+.pet-heart {
+  pointer-events: none;
+}
+
+.pet-heart {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: heartUp 1.7s ease-out forwards;
+}
+
+@keyframes heartUp {
+  0% {
+    opacity: 0;
+    transform: translate(0, 6px) scale(0.4);
+  }
+  18% {
+    opacity: 0.98;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--hx, 0px), -70px) scale(1.05) rotate(var(--hr, 0deg));
+  }
+}
+
+/* 吃饭 */
+.food-bowl {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.3s ease, transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.25);
+  pointer-events: none;
+}
+
+.scene.is-eating .food-bowl {
+  opacity: 1;
+  transform: none;
+}
+
+.scene.is-eating .kibble {
+  animation: kibbleGone 2.8s steps(1) forwards;
+}
+
+@keyframes kibbleGone {
+  0%,
+  72% {
+    opacity: 1;
+  }
+  73%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.scene.is-eating .cat-head {
+  animation: nibble 0.58s ease-in-out 3;
+}
+
+.scene.is-eating .eyes-open {
+  opacity: 0;
+}
+
+.scene.is-eating .eyes-closed {
+  opacity: 1;
+}
+
+@keyframes nibble {
+  0%,
+  100% {
+    transform: rotate(1deg) translateY(0);
+  }
+  35% {
+    transform: rotate(4deg) translateY(9px);
+  }
+  70% {
+    transform: rotate(1.5deg) translateY(3px);
+  }
 }
 
 .cat.is-happy .cat-breath {

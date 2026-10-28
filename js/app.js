@@ -39,6 +39,12 @@ const el = {
   todayNum: $("#todayNum"),
   totalNum: $("#totalNum"),
   weekRow: $("#weekRow"),
+  foodNum: $("#foodNum"),
+  feedBtn: $("#feedBtn"),
+  petBtn: $("#petBtn"),
+  careNote: $("#careNote"),
+  foodBowl: $("#foodBowl"),
+  petHearts: $("#petHearts"),
 
   settingsDlg: $("#settingsDlg"),
   settingsForm: $("#settingsForm"),
@@ -58,6 +64,12 @@ const ui = {
   tickId: 0,
   bubbleId: 0,
   wakeId: 0,
+  petTimer: 0,
+  eatTimer: 0,
+  petting: false,
+  petStartAt: 0,
+  eating: false,
+  lastPetAt: 0,
   wake: null,
   audio: null,
 };
@@ -265,6 +277,12 @@ function applyMode() {
   const today = store.todayCount();
   const wasAsleep = el.scene.dataset.cat === "sleep";
 
+  if (cfg.asleep && ui.eating) {
+    clearTimeout(ui.eatTimer);
+    ui.eating = false;
+    el.scene.classList.remove("is-eating");
+  }
+
   el.scene.dataset.cat = cfg.asleep ? "sleep" : "awake";
   if (wasAsleep && !cfg.asleep) {
     clearTimeout(ui.wakeId);
@@ -406,6 +424,7 @@ function finishFocus(silent, startRest = true) {
   releaseWakeLock();
 
   store.addSession(ui.total / 60000);
+  store.data.food += 1;
 
   if (!startRest) {
     ui.mode = "idle";
@@ -416,6 +435,8 @@ function finishFocus(silent, startRest = true) {
     applyMode();
     renderStats();
     renderBowl(true);
+    renderCare();
+    popFood();
     celebrate();
     return;
   }
@@ -433,6 +454,8 @@ function finishFocus(silent, startRest = true) {
   startTick();
   renderStats();
   renderBowl(true);
+  renderCare();
+  popFood();
   celebrate();
 
   if (!silent) chime("focusEnd");
@@ -455,7 +478,8 @@ function celebrate() {
   const streak = store.streak();
   const today = store.todayCount();
   let msg;
-  if (copy.milestones[streak]) msg = copy.milestones[streak];
+  if (store.total() === 1 && store.data.feeds === 0) msg = copy.firstFood;
+  else if (copy.milestones[streak]) msg = copy.milestones[streak];
   else if (today === 4) msg = copy.roundFour;
   else msg = pick(copy.focusEnd);
   say(fmt(msg), 13000);
@@ -497,8 +521,11 @@ function stopCurrent() {
 
     if (elapsed >= 5 * 60000) {
       store.addSession(elapsed / 60000);
+      store.data.food += 1;
       renderStats();
       renderBowl(true);
+      renderCare();
+      popFood();
       say(fmt(pick(copy.stopEarly)), 9000);
       chime("focusEnd");
       wiggle();
@@ -714,6 +741,119 @@ function renderBowl(isNew) {
   }
 }
 
+/* ---------------- 摸一摸 / 喂小猫 ---------------- */
+
+function renderCare() {
+  el.foodNum.textContent = String(store.data.food);
+  el.careNote.textContent = `摸过 ${store.data.pets} 次 · 喂过 ${store.data.feeds} 次`;
+  el.feedBtn.classList.toggle("is-empty", store.data.food <= 0);
+}
+
+function popFood() {
+  el.foodNum.classList.remove("is-pop");
+  void el.foodNum.offsetWidth;
+  el.foodNum.classList.add("is-pop");
+}
+
+function spawnHearts(n = 1) {
+  for (let i = 0; i < n; i++) {
+    const wrap = document.createElementNS(NS, "g");
+    const x = 446 + (Math.random() * 110 - 55);
+    const y = 214 + (Math.random() * 24 - 12);
+    wrap.setAttribute("transform", `translate(${x.toFixed(1)} ${y.toFixed(1)}) scale(1.4)`);
+
+    const heart = document.createElementNS(NS, "path");
+    heart.setAttribute(
+      "d",
+      "M0 0C-2.6-3.9-9.1-5.2-10.4 0c-1.3 5.2 5.2 9.1 10.4 13 5.2-3.9 11.7-7.8 10.4-13-1.3-5.2-7.8-3.9-10.4 0Z",
+    );
+    heart.setAttribute("fill", ["#ff8fa0", "#ffb3c1", "#ffe0cf"][Math.floor(Math.random() * 3)]);
+    heart.setAttribute("stroke", "#fff");
+    heart.setAttribute("stroke-opacity", ".3");
+    heart.setAttribute("stroke-width", ".9");
+    heart.setAttribute("class", "pet-heart");
+    heart.style.setProperty("--hx", `${(Math.random() * 36 - 18).toFixed(0)}px`);
+    heart.style.setProperty("--hr", `${(Math.random() * 24 - 12).toFixed(0)}deg`);
+
+    wrap.append(heart);
+    el.petHearts.append(wrap);
+    setTimeout(() => wrap.remove(), 1800);
+  }
+}
+
+function petStart() {
+  if (ui.eating) return;
+  if (!ui.petting) {
+    ui.petting = true;
+    ui.petStartAt = Date.now();
+    el.scene.classList.add("is-petting");
+    store.data.pets += 1;
+    store.save();
+    renderCare();
+  }
+  spawnHearts(2);
+  clearInterval(ui.petTimer);
+  ui.petTimer = setInterval(() => spawnHearts(1), 460);
+}
+
+function petEnd() {
+  if (!ui.petting) return;
+  ui.petting = false;
+  el.scene.classList.remove("is-petting");
+  clearInterval(ui.petTimer);
+  ui.petTimer = 0;
+
+  if (ui.mode === "focus" || ui.mode === "paused" || ui.mode === "companion" || ui.mode === "night") {
+    return;
+  }
+  if (Date.now() - ui.lastPetAt < 2600) return;
+
+  ui.lastPetAt = Date.now();
+  const quick = Date.now() - ui.petStartAt < 280;
+  say(fmt(pick(quick ? copy.catAwake : copy.pet)), 5200);
+}
+
+function petBurst() {
+  if (ui.petting) return;
+  petStart();
+  setTimeout(petEnd, 1200);
+}
+
+function feedCat() {
+  if (ui.eating) return;
+
+  if (ui.mode === "focus" || ui.mode === "paused" || ui.mode === "companion") {
+    say(fmt(copy.feedAsleep), 5000);
+    return;
+  }
+  if (ui.mode === "night") {
+    say(fmt(copy.feedNight), 5000);
+    return;
+  }
+  if (store.data.food <= 0) {
+    say(fmt(copy.feedEmpty), 6000);
+    return;
+  }
+
+  store.data.food -= 1;
+  store.data.feeds += 1;
+  store.save();
+  renderCare();
+
+  clearTimeout(ui.bubbleId);
+  el.bubble.classList.remove("is-on");
+
+  ui.eating = true;
+  el.scene.classList.add("is-eating");
+  clearTimeout(ui.eatTimer);
+  ui.eatTimer = setTimeout(() => {
+    ui.eating = false;
+    el.scene.classList.remove("is-eating");
+    spawnHearts(3);
+    say(fmt(pick(copy.feed)), 6200);
+  }, 3000);
+}
+
 /* ---------------- 设置 ---------------- */
 
 function applyNames() {
@@ -856,18 +996,14 @@ function bind() {
     applyMode();
   });
 
-  el.cat.addEventListener("click", () => {
-    if (
-      ui.mode === "focus" ||
-      ui.mode === "paused" ||
-      ui.mode === "companion" ||
-      ui.mode === "night"
-    ) {
-      say(fmt(pick(copy.catSleep)), 4000);
-    } else {
-      say(fmt(pick(copy.catAwake)), 5000);
-    }
+  el.cat.addEventListener("pointerdown", (e) => {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    petStart();
   });
+  window.addEventListener("pointerup", petEnd);
+  window.addEventListener("pointercancel", petEnd);
+  el.petBtn.addEventListener("click", petBurst);
+  el.feedBtn.addEventListener("click", feedCat);
 
   el.taskForm.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -936,6 +1072,7 @@ function init() {
   renderTasks();
   renderStats();
   renderBowl(false);
+  renderCare();
   fitScene();
   bind();
 

@@ -20,6 +20,9 @@ function fresh() {
     timer: null,
     companion: false,
     closedAt: null,
+    food: 2,
+    pets: 0,
+    feeds: 0,
   };
 }
 
@@ -66,6 +69,9 @@ export const store = {
       timer: raw.timer && typeof raw.timer === "object" ? raw.timer : null,
       companion: raw.companion === true,
       closedAt: typeof raw.closedAt === "string" ? raw.closedAt : null,
+      food: Number.isFinite(raw.food) ? Math.max(0, Math.floor(raw.food)) : 2,
+      pets: Number.isFinite(raw.pets) ? Math.max(0, Math.floor(raw.pets)) : 0,
+      feeds: Number.isFinite(raw.feeds) ? Math.max(0, Math.floor(raw.feeds)) : 0,
     };
 
     // 换了一天：没写完的作业接着留着，写完的清掉

@@ -1,5 +1,5 @@
 /* 让小鱼断网也能打开这张书桌 */
-const CACHE = "mao-yu-v2";
+const CACHE = "mao-yu-v3";
 const ASSETS = [
   "./",
   "./index.html",
