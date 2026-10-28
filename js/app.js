@@ -857,7 +857,12 @@ function bind() {
   });
 
   el.cat.addEventListener("click", () => {
-    if (ui.mode === "focus" || ui.mode === "paused" || ui.mode === "companion") {
+    if (
+      ui.mode === "focus" ||
+      ui.mode === "paused" ||
+      ui.mode === "companion" ||
+      ui.mode === "night"
+    ) {
       say(fmt(pick(copy.catSleep)), 4000);
     } else {
       say(fmt(pick(copy.catAwake)), 5000);
