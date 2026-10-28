@@ -1546,7 +1546,8 @@ li:hover .del,
   pointer-events: none;
 }
 
-.scene.is-eating .food-bowl {
+.scene.is-eating .food-bowl,
+.scene.is-served .food-bowl {
   opacity: 1;
   transform: none;
 }

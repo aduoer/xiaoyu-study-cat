@@ -20,7 +20,9 @@ function fresh() {
     timer: null,
     companion: false,
     closedAt: null,
-    food: 2,
+    food: 3,
+    foodDate: dayKey(),
+    pendingFeed: false,
     pets: 0,
     feeds: 0,
   };
@@ -69,10 +71,18 @@ export const store = {
       timer: raw.timer && typeof raw.timer === "object" ? raw.timer : null,
       companion: raw.companion === true,
       closedAt: typeof raw.closedAt === "string" ? raw.closedAt : null,
-      food: Number.isFinite(raw.food) ? Math.max(0, Math.floor(raw.food)) : 2,
+      food: Number.isFinite(raw.food) ? Math.max(0, Math.floor(raw.food)) : 3,
+      foodDate: typeof raw.foodDate === "string" ? raw.foodDate : dayKey(),
+      pendingFeed: raw.pendingFeed === true,
       pets: Number.isFinite(raw.pets) ? Math.max(0, Math.floor(raw.pets)) : 0,
       feeds: Number.isFinite(raw.feeds) ? Math.max(0, Math.floor(raw.feeds)) : 0,
     };
+
+    // 每天早上猫粮袋自动补到 3 份，想喂的时候总有的喂
+    if (this.data.foodDate !== dayKey()) {
+      this.data.food = Math.max(this.data.food, 3);
+      this.data.foodDate = dayKey();
+    }
 
     // 换了一天：没写完的作业接着留着，写完的清掉
     if (this.data.tasksDate !== dayKey()) {

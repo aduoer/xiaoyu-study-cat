@@ -83,8 +83,10 @@ export const copy = {
     "吃完了，我舔舔嘴。",
   ],
 
-  feedEmpty: "猫粮袋空了。写完一轮，就有新的了。",
-  feedAsleep: "小猫在睡觉，饭先放着吧。",
+  feedEmpty: "猫粮袋空了。写完一轮会多一份，明早也会补满。",
+  feedServed: "（饭放在这儿，等小猫醒了吃。）",
+  feedServedNight: "（饭放在这儿，明早吃。）",
+  feedWaiting: "碗里还有饭，等它吃完。",
   feedNight: "小猫睡了，明天再喂它吧。",
   firstFood: "写完一轮啦。猫粮袋里多了一份，你可以喂我。",
 

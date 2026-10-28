@@ -284,6 +284,7 @@ function applyMode() {
   }
 
   el.scene.dataset.cat = cfg.asleep ? "sleep" : "awake";
+  el.scene.classList.toggle("is-served", store.data.pendingFeed && !ui.eating);
   if (wasAsleep && !cfg.asleep) {
     clearTimeout(ui.wakeId);
     el.cat.classList.remove("is-waking");
@@ -338,6 +339,8 @@ function applyMode() {
   el.durations.querySelectorAll("button").forEach((b) => {
     b.classList.toggle("on", Number(b.dataset.min) === store.data.settings.focus);
   });
+
+  if (!cfg.asleep && store.data.pendingFeed && !ui.eating) eatNow();
 
   renderClock();
 }
@@ -746,7 +749,10 @@ function renderBowl(isNew) {
 function renderCare() {
   el.foodNum.textContent = String(store.data.food);
   el.careNote.textContent = `摸过 ${store.data.pets} 次 · 喂过 ${store.data.feeds} 次`;
-  el.feedBtn.classList.toggle("is-empty", store.data.food <= 0);
+
+  const waiting = store.data.pendingFeed;
+  el.feedBtn.textContent = waiting ? "等它醒" : "喂小猫";
+  el.feedBtn.classList.toggle("is-empty", store.data.food <= 0 || waiting);
 }
 
 function popFood() {
@@ -819,29 +825,15 @@ function petBurst() {
   setTimeout(petEnd, 1200);
 }
 
-function feedCat() {
+function eatNow() {
   if (ui.eating) return;
 
-  if (ui.mode === "focus" || ui.mode === "paused" || ui.mode === "companion") {
-    say(fmt(copy.feedAsleep), 5000);
-    return;
-  }
-  if (ui.mode === "night") {
-    say(fmt(copy.feedNight), 5000);
-    return;
-  }
-  if (store.data.food <= 0) {
-    say(fmt(copy.feedEmpty), 6000);
-    return;
-  }
-
-  store.data.food -= 1;
+  store.data.pendingFeed = false;
   store.data.feeds += 1;
   store.save();
-  renderCare();
 
-  clearTimeout(ui.bubbleId);
-  el.bubble.classList.remove("is-on");
+  el.scene.classList.remove("is-served");
+  renderCare();
 
   ui.eating = true;
   el.scene.classList.add("is-eating");
@@ -852,6 +844,37 @@ function feedCat() {
     spawnHearts(3);
     say(fmt(pick(copy.feed)), 6200);
   }, 3000);
+}
+
+function feedCat() {
+  if (ui.eating) return;
+
+  if (store.data.pendingFeed) {
+    say(fmt(copy.feedWaiting), 5000);
+    return;
+  }
+  if (store.data.food <= 0) {
+    say(fmt(copy.feedEmpty), 6000);
+    return;
+  }
+
+  store.data.food -= 1;
+  store.save();
+  renderCare();
+
+  const asleep =
+    ui.mode === "focus" || ui.mode === "paused" || ui.mode === "companion" || ui.mode === "night";
+
+  if (asleep) {
+    store.data.pendingFeed = true;
+    store.save();
+    el.scene.classList.add("is-served");
+    renderCare();
+    say(fmt(ui.mode === "night" ? copy.feedServedNight : copy.feedServed), 6500);
+    return;
+  }
+
+  eatNow();
 }
 
 /* ---------------- 设置 ---------------- */
@@ -1094,6 +1117,7 @@ function init() {
     renderTasks();
     renderStats();
     renderBowl(false);
+    renderCare();
     applyMode();
   }, 60000);
 
