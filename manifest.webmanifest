@@ -1,0 +1,17 @@
+{
+  "name": "小猫陪小鱼写作业",
+  "short_name": "小猫陪读",
+  "description": "小猫趴在桌角陪你写作业，不催你，也不吵你。",
+  "lang": "zh-CN",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#100d1c",
+  "theme_color": "#100d1c",
+  "icons": [
+    { "src": "./icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "./icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

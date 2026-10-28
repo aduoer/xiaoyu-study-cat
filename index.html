@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>小猫陪小鱼写作业</title>
+<meta name="description" content="一个安静的夜晚书桌。小猫趴在台灯旁边，陪着写作业；它只在你开始和结束的时候，轻轻出声。">
+<meta name="theme-color" content="#100d1c">
+<meta property="og:type" content="website">
+<meta property="og:title" content="小猫陪小鱼写作业">
+<meta property="og:description" content="小猫趴在桌角陪你写作业，不催你，也不吵你。">
+<meta property="og:image" content="https://aduoer.github.io/xiaoyu-study-cat/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://aduoer.github.io/xiaoyu-study-cat/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<svg class="sprite" aria-hidden="true" focusable="false">
+  <symbol id="i-paw" viewBox="0 0 24 24">
+    <ellipse cx="7" cy="7.4" rx="2.5" ry="3.2" transform="rotate(-16 7 7.4)"/>
+    <ellipse cx="12" cy="6" rx="2.5" ry="3.3"/>
+    <ellipse cx="17" cy="7.4" rx="2.5" ry="3.2" transform="rotate(16 17 7.4)"/>
+    <path d="M12 10.4c3.3 0 6 2.6 6 5.4 0 2.2-1.8 3.4-4 3.4-1.1 0-1.6-.3-2-.3s-.9.3-2 .3c-2.2 0-4-1.2-4-3.4 0-2.8 2.7-5.4 6-5.4Z"/>
+  </symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24">
+    <path d="M6.5 9.5a5.5 5.5 0 0 1 11 0c0 4 1.4 5.4 2 6H4.5c.6-.6 2-2 2-6Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+    <path d="M9.8 19a2.3 2.3 0 0 0 4.4 0" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="i-bell-off" viewBox="0 0 24 24">
+    <path d="M6.5 9.5a5.5 5.5 0 0 1 8.2-4.8M6.7 12.2c-.3 2.2-1.4 3.3-2.2 3.9h11" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M9.8 19a2.3 2.3 0 0 0 4.4 0M4 4l16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24">
+    <path d="M4 7.5h16M4 12h16M4 16.5h16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" opacity=".55"/>
+    <circle cx="9" cy="7.5" r="2.1" fill="var(--bg, #100d1c)" stroke="currentColor" stroke-width="1.7"/>
+    <circle cx="15.5" cy="12" r="2.1" fill="var(--bg, #100d1c)" stroke="currentColor" stroke-width="1.7"/>
+    <circle cx="10.5" cy="16.5" r="2.1" fill="var(--bg, #100d1c)" stroke="currentColor" stroke-width="1.7"/>
+  </symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24">
+    <path d="M12 5.5v13M5.5 12h13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="i-check" viewBox="0 0 24 24">
+    <path d="m5.5 12.5 4.2 4.2 8.8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="i-x" viewBox="0 0 24 24">
+    <path d="M7 7l10 10M17 7 7 17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="i-fish" viewBox="0 0 24 24">
+    <path d="M15.4 12c0 3-2.6 5.2-6 5.2-2.6 0-4.7-1.3-5.5-3.4.8-2.9 3.2-4.6 6.2-4.6 3 0 5.3 1.2 5.3 2.8Z"/>
+    <path d="M15.4 12c1.4-.4 2.6-1.4 3.4-2.7.3 1.7.3 3.7 0 5.4-.8-1.3-2-2.3-3.4-2.7Z"/>
+    <circle cx="7.6" cy="11" r="1" fill="#100d1c" opacity=".55"/>
+  </symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24">
+    <path d="M20 14.4A8.2 8.2 0 0 1 9.6 4a8.3 8.3 0 1 0 10.4 10.4Z" fill="currentColor"/>
+  </symbol>
+  <symbol id="i-star" viewBox="0 0 24 24">
+    <path d="m12 3.6 2.5 5.2 5.7.8-4.1 4 1 5.7-5.1-2.7-5.1 2.7 1-5.7-4.1-4 5.7-.8Z" fill="currentColor"/>
+  </symbol>
+</svg>
+
+<div class="page">
+
+  <header class="topbar">
+    <h1 class="brand">
+      <svg class="brand-icon" aria-hidden="true"><use href="#i-paw"/></svg>
+      <span><b data-name="fish">小鱼</b>的书桌</span>
+    </h1>
+    <div class="topbar-right">
+      <time class="today" id="todayLabel"></time>
+      <button class="icon-btn" id="soundBtn" type="button" aria-label="提示音" aria-pressed="true">
+        <svg class="ico-on" aria-hidden="true"><use href="#i-bell"/></svg>
+        <svg class="ico-off" aria-hidden="true"><use href="#i-bell-off"/></svg>
+      </button>
+      <button class="icon-btn" id="settingsBtn" type="button" aria-label="设置">
+        <svg aria-hidden="true"><use href="#i-gear"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="scene" id="scene" data-cat="awake" aria-label="夜晚的书桌">
+      <svg class="scene-svg" id="sceneSvg" viewBox="0 0 1200 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id="gWall" x1="0" y1="0" x2=".2" y2="1">
+            <stop offset="0" stop-color="#151129"/>
+            <stop offset=".55" stop-color="#221935"/>
+            <stop offset="1" stop-color="#2c1c34"/>
+          </linearGradient>
+          <radialGradient id="gWarmGlow" cx=".5" cy=".5" r=".5">
+            <stop offset="0" stop-color="#ffb85c" stop-opacity=".42"/>
+            <stop offset="1" stop-color="#ffb85c" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="gCoolGlow" cx=".5" cy=".5" r=".5">
+            <stop offset="0" stop-color="#8aa8ff" stop-opacity=".20"/>
+            <stop offset="1" stop-color="#8aa8ff" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="gMoonGlow" cx=".5" cy=".5" r=".5">
+            <stop offset="0" stop-color="#ffe6a8" stop-opacity=".55"/>
+            <stop offset=".55" stop-color="#ffe0a0" stop-opacity=".14"/>
+            <stop offset="1" stop-color="#ffe0a0" stop-opacity="0"/>
+          </radialGradient>
+          <linearGradient id="gSky" x1="0" y1="0" x2=".25" y2="1">
+            <stop offset="0" stop-color="#0f1840"/>
+            <stop offset=".52" stop-color="#2a2356"/>
+            <stop offset="1" stop-color="#553460"/>
+          </linearGradient>
+          <linearGradient id="gDeskTop" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#87574c"/>
+            <stop offset="1" stop-color="#5f3a39"/>
+          </linearGradient>
+          <linearGradient id="gDeskFront" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#3b242a"/>
+            <stop offset=".6" stop-color="#281820"/>
+            <stop offset="1" stop-color="#1a1017"/>
+          </linearGradient>
+          <linearGradient id="gFur" x1=".15" y1="0" x2=".55" y2="1">
+            <stop offset="0" stop-color="#ffd29b"/>
+            <stop offset=".55" stop-color="#ffc07c"/>
+            <stop offset="1" stop-color="#efa05d"/>
+          </linearGradient>
+          <radialGradient id="gFurHead" cx=".36" cy=".28" r=".92">
+            <stop offset="0" stop-color="#ffe6bc"/>
+            <stop offset=".55" stop-color="#ffcd8d"/>
+            <stop offset="1" stop-color="#f2a763"/>
+          </radialGradient>
+          <linearGradient id="gBelly" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#fff5e2"/>
+            <stop offset="1" stop-color="#ffe2bf"/>
+          </linearGradient>
+          <linearGradient id="gShade" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#f5c088"/>
+            <stop offset=".6" stop-color="#e5a06a"/>
+            <stop offset="1" stop-color="#c98253"/>
+          </linearGradient>
+          <linearGradient id="gLampCone" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#ffc46e" stop-opacity=".34"/>
+            <stop offset=".6" stop-color="#ffb45c" stop-opacity=".10"/>
+            <stop offset="1" stop-color="#ffb45c" stop-opacity="0"/>
+          </linearGradient>
+          <linearGradient id="gWater" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#7fd0e6" stop-opacity=".30"/>
+            <stop offset="1" stop-color="#3d8fb8" stop-opacity=".10"/>
+          </linearGradient>
+          <filter id="fBlurSm" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4"/></filter>
+          <filter id="fBlurMd" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="11"/></filter>
+          <filter id="fBlurLg" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="24"/></filter>
+          <clipPath id="clipWin"><rect x="756" y="24" width="396" height="298" rx="18"/></clipPath>
+          <clipPath id="clipBowl"><path d="M980 358C944 358 932 388 934 412c2 26 20 36 46 36s44-10 46-36c2-24-10-54-46-54Z"/></clipPath>
+          <mask id="mMoonCut" maskUnits="userSpaceOnUse" x="960" y="60" width="120" height="120">
+            <rect x="960" y="60" width="120" height="120" fill="#fff"/>
+            <circle cx="1037" cy="96" r="37" fill="#000"/>
+          </mask>
+        </defs>
+
+        <!-- 墙 -->
+        <rect width="1200" height="520" fill="url(#gWall)"/>
+        <ellipse cx="300" cy="400" rx="360" ry="280" fill="url(#gWarmGlow)" opacity=".75"/>
+        <ellipse cx="980" cy="200" rx="330" ry="260" fill="url(#gCoolGlow)"/>
+
+        <!-- 小灯串 -->
+        <g class="bunting" opacity=".9">
+          <path d="M10 26Q280 128 560 50" fill="none" stroke="#3d2f4d" stroke-width="1.6"/>
+          <g class="bulbs">
+            <circle cx="72" cy="63" r="3.4"/><circle cx="140" cy="82" r="3.4"/>
+            <circle cx="210" cy="95" r="3.4"/><circle cx="285" cy="100" r="3.4"/>
+            <circle cx="360" cy="96" r="3.4"/><circle cx="435" cy="83" r="3.4"/>
+            <circle cx="505" cy="67" r="3.4"/>
+          </g>
+        </g>
+
+        <!-- 窗 -->
+        <g class="window">
+          <rect x="738" y="6" width="432" height="338" rx="30" fill="#33264a" opacity=".55"/>
+          <rect x="754" y="22" width="400" height="302" rx="20" fill="#0c1030"/>
+          <g clip-path="url(#clipWin)">
+            <rect x="756" y="24" width="396" height="298" fill="url(#gSky)"/>
+            <circle cx="1016" cy="112" r="104" fill="url(#gMoonGlow)"/>
+            <g class="stars" fill="#fff3d4">
+              <circle cx="792" cy="62" r="1.7" opacity=".85"/>
+              <circle cx="836" cy="112" r="1.1" opacity=".55"/>
+              <circle cx="874" cy="52" r="1.3" opacity=".7"/>
+              <circle cx="900" cy="140" r="1.6" opacity=".5"/>
+              <circle cx="944" cy="70" r="1" opacity=".65"/>
+              <circle cx="966" cy="150" r="1.2" opacity=".45"/>
+              <circle cx="1092" cy="62" r="1.5" opacity=".8"/>
+              <circle cx="1120" cy="140" r="1.1" opacity=".5"/>
+              <circle cx="1064" cy="196" r="1.3" opacity=".4"/>
+              <circle cx="812" cy="196" r="1.2" opacity=".4"/>
+              <circle cx="864" cy="248" r="1" opacity=".3"/>
+              <circle cx="1128" cy="248" r="1.5" opacity=".35"/>
+            </g>
+            <g class="sparkles" fill="#fff6dd">
+              <path d="M884 96l1.3 3.9 3.9 1.3-3.9 1.3-1.3 3.9-1.3-3.9-3.9-1.3 3.9-1.3Z" opacity=".75"/>
+              <path d="M1104 108l1 3 3 1-3 1-1 3-1-3-3-1 3-1Z" opacity=".55"/>
+            </g>
+            <circle cx="1016" cy="112" r="39" fill="#ffe8b2" mask="url(#mMoonCut)"/>
+            <ellipse class="cloud" cx="870" cy="232" rx="86" ry="15" fill="#cfd8ff" opacity=".06"/>
+            <ellipse class="cloud c2" cx="1060" cy="258" rx="70" ry="12" fill="#cfd8ff" opacity=".05"/>
+            <path d="M756 322V300h32v-14h28v12h26v-22h30v22h28v-10h30v14h32v-18h34v18h34v-10h32v14h34v-16h28v16h24v26Z" fill="#151233" opacity=".9"/>
+            <g fill="#ffd98d" opacity=".55">
+              <rect x="800" y="304" width="3" height="4" rx="1"/>
+              <rect x="882" y="302" width="3" height="4" rx="1"/>
+              <rect x="1004" y="306" width="3" height="4" rx="1"/>
+              <rect x="1090" y="300" width="3" height="4" rx="1"/>
+            </g>
+          </g>
+          <g stroke="#3c2f55" stroke-width="9" opacity=".95">
+            <path d="M954 24v298"/>
+            <path d="M756 174h396"/>
+          </g>
+          <rect x="754" y="22" width="400" height="302" rx="20" fill="none" stroke="#4c3a68" stroke-width="4"/>
+          <rect x="760" y="28" width="388" height="290" rx="16" fill="none" stroke="#fff" stroke-opacity=".05" stroke-width="1.5"/>
+          <rect x="730" y="330" width="452" height="15" rx="7" fill="#4a3960"/>
+          <rect x="730" y="330" width="452" height="4" rx="2" fill="#6f5789" opacity=".7"/>
+        </g>
+
+        <!-- 桌子 -->
+        <g class="desk">
+          <rect x="0" y="446" width="1200" height="74" fill="url(#gDeskFront)"/>
+          <rect x="0" y="436" width="1200" height="14" fill="url(#gDeskTop)"/>
+          <rect x="0" y="436" width="1200" height="2.5" fill="#b07f68" opacity=".5"/>
+          <path d="M0 464c120 4 210-2 330 1s260-4 380 0 300-2 490 1" fill="none" stroke="#000" stroke-opacity=".14" stroke-width="2"/>
+          <ellipse cx="560" cy="446" rx="520" ry="20" fill="#000" opacity=".22" filter="url(#fBlurMd)"/>
+        </g>
+
+        <!-- 台灯 -->
+        <g class="prop-lamp">
+          <circle cx="152" cy="372" r="118" fill="url(#gWarmGlow)"/>
+          <path class="lamp-cone" d="M104 352h96l128 94H20Z" fill="url(#gLampCone)" filter="url(#fBlurSm)"/>
+          <ellipse cx="150" cy="447" rx="46" ry="9" fill="#100812" opacity=".5"/>
+          <path d="M150 440v-84" stroke="#4b3550" stroke-width="7"/>
+          <ellipse cx="150" cy="446" rx="35" ry="8.5" fill="#4a3254"/>
+          <ellipse cx="150" cy="442" rx="35" ry="8.5" fill="#6b4b70"/>
+          <path d="M106 320q44-12 88 0l12 36q-56 14-112 0Z" fill="url(#gShade)"/>
+          <path d="M94 356q56 14 112 0" fill="none" stroke="#ffd79b" stroke-width="3" opacity=".75"/>
+          <ellipse cx="150" cy="362" rx="52" ry="11" fill="#ffd79b" opacity=".32" filter="url(#fBlurSm)"/>
+        </g>
+
+        <!-- 书 -->
+        <g class="prop-books">
+          <ellipse cx="642" cy="447" rx="66" ry="7" fill="#100812" opacity=".45"/>
+          <rect x="588" y="426" width="110" height="19" rx="5" fill="#5b4a7a"/>
+          <rect x="588" y="426" width="8" height="19" rx="4" fill="#7d6aa0"/>
+          <rect x="700" y="429" width="5" height="13" rx="2.5" fill="#efe2cd"/>
+          <rect x="598" y="409" width="96" height="17" rx="5" fill="#7c4a58"/>
+          <rect x="598" y="409" width="7" height="17" rx="3.5" fill="#9c6673"/>
+          <rect x="694" y="412" width="4" height="11" rx="2" fill="#efe2cd"/>
+          <rect x="608" y="394" width="78" height="15" rx="4" fill="#3f6e74"/>
+          <rect x="608" y="394" width="6" height="15" rx="3" fill="#5e969a"/>
+          <rect x="686" y="397" width="3" height="9" rx="1.5" fill="#efe2cd"/>
+        </g>
+
+        <!-- 杯子 -->
+        <g class="prop-mug">
+          <ellipse cx="742" cy="447" rx="28" ry="6" fill="#100812" opacity=".45"/>
+          <path d="M724 410c13 3 13 26 0 29" fill="none" stroke="#dcc3a2" stroke-width="6" stroke-linecap="round"/>
+          <path d="M716 400h48v28c0 11-11 18-24 18s-24-7-24-18Z" fill="#e7d0b0"/>
+          <ellipse cx="740" cy="401" rx="24" ry="5.5" fill="#f6e5cb"/>
+          <ellipse cx="740" cy="401" rx="18" ry="3.6" fill="#7b4a37" opacity=".75"/>
+          <path d="M717 421h46" stroke="#7fb6b2" stroke-width="8" opacity=".55"/>
+          <g class="steam" fill="none" stroke="#ffe9c9" stroke-width="2.4" stroke-linecap="round" opacity=".28">
+            <path d="M731 392c-6-7 5-11 0-19"/>
+            <path d="M745 390c-5-6 4-10 0-17"/>
+          </g>
+        </g>
+
+        <!-- 鱼缸 -->
+        <g class="prop-bowl">
+          <ellipse cx="980" cy="449" rx="50" ry="7" fill="#100812" opacity=".45"/>
+          <path d="M980 358C944 358 932 388 934 412c2 26 20 36 46 36s44-10 46-36c2-24-10-54-46-54Z" fill="#9fd4e8" fill-opacity=".08" stroke="#cfe9ff" stroke-opacity=".3" stroke-width="2"/>
+          <g clip-path="url(#clipBowl)">
+            <rect x="920" y="384" width="120" height="70" fill="url(#gWater)"/>
+            <ellipse cx="980" cy="384" rx="40" ry="4.5" fill="#bfeaff" opacity=".35"/>
+            <g id="bowlFish" class="bowl-fish"></g>
+            <g fill="#dff5ff" opacity=".35">
+              <circle cx="1006" cy="404" r="1.8"/>
+              <circle cx="1012" cy="394" r="1.2"/>
+              <circle cx="1002" cy="392" r="1"/>
+            </g>
+          </g>
+          <ellipse cx="980" cy="358" rx="46" ry="6.5" fill="#bfe4f5" fill-opacity=".1" stroke="#d6efff" stroke-opacity=".35" stroke-width="1.6"/>
+          <path d="M950 372c-8 14-9 30-2 42" fill="none" stroke="#e4f6ff" stroke-opacity=".22" stroke-width="3" stroke-linecap="round"/>
+        </g>
+
+        <!-- 猫 -->
+        <g class="cat" transform="translate(446 446)">
+          <ellipse cx="0" cy="4" rx="88" ry="13" fill="#100812" opacity=".5" filter="url(#fBlurSm)"/>
+          <g class="cat-breath">
+            <g transform="translate(56 -22)">
+              <g class="tail-sway">
+                <path d="M0 0C42 5 62-24 46-44C36-57 20-50 24-40" fill="none" stroke="#f4b071" stroke-width="23" stroke-linecap="round"/>
+                <path d="M0 0C42 5 62-24 46-44C36-57 20-50 24-40" fill="none" stroke="#ffd8a4" stroke-width="14" stroke-linecap="round" opacity=".32"/>
+              </g>
+            </g>
+
+            <path d="M-66-10C-70-62-54-100-27-107C-12-110 12-110 27-107C54-100 70-62 66-10C66-2 60 0 48 0H-48C-60 0-66-2-66-10Z" fill="url(#gFur)"/>
+            <path d="M0-96C24-88 36-54 34-8C34-2 30 0 24 0H-24C-30 0-34-2-34-8C-36-54-24-88 0-96Z" fill="url(#gBelly)"/>
+            <ellipse cx="0" cy="-110" rx="42" ry="15" fill="#ffc887"/>
+            <path d="M-40-106Q0-92 40-106" fill="none" stroke="#c98150" stroke-width="11" stroke-opacity=".13" filter="url(#fBlurSm)"/>
+            <path d="M-64-24C-68-62-54-96-32-104" fill="none" stroke="#ffe3b8" stroke-opacity=".42" stroke-width="2.6" stroke-linecap="round"/>
+            <path d="M64-32C60-68 48-94 30-102" fill="none" stroke="#c6d8ff" stroke-opacity=".2" stroke-width="2.4" stroke-linecap="round"/>
+
+            <rect x="-46" y="-22" width="38" height="22" rx="10.5" fill="#ffd7a5"/>
+            <rect x="8" y="-22" width="38" height="22" rx="10.5" fill="#ffd7a5"/>
+            <path d="M-36-8v-7M-27-8v-7M27-8v-7M36-8v-7" stroke="#eaa872" stroke-width="2.2" stroke-linecap="round" opacity=".8"/>
+            <path d="M-4-3h8" stroke="#e6a06b" stroke-width="2.4" stroke-linecap="round" opacity=".45"/>
+
+            <path d="M-44-118q44 15 88 0" fill="none" stroke="#3f6f86" stroke-width="9" stroke-linecap="round"/>
+            <circle cx="0" cy="-101" r="2.4" fill="none" stroke="#e3b45e" stroke-width="1.6"/>
+            <g class="tag" transform="translate(0 -92)">
+              <path d="M-6 0a6 4.4 0 0 1 12 0 6 4.4 0 0 1-12 0Z" fill="#6fd3c7"/>
+              <path d="M6 0l5-4v8Z" fill="#6fd3c7"/>
+              <circle cx="-2.5" cy="-1" r=".9" fill="#12303a" opacity=".7"/>
+            </g>
+
+            <g class="cat-head">
+              <path d="M-54-186-46-246-8-206Z" fill="#f3ad6b"/>
+              <path d="M54-186 46-246 8-206Z" fill="#f3ad6b"/>
+              <path d="M-45-196-41-228-20-208Z" fill="#f6aeaa"/>
+              <path d="M45-196 41-228 20-208Z" fill="#f6aeaa"/>
+              <path d="M-56-168c0-42 24-60 56-60s56 18 56 60c0 32-26 52-56 52s-56-20-56-52Z" fill="url(#gFurHead)"/>
+              <path d="M-56-168c0-42 24-60 56-60s56 18 56 60c0 32-26 52-56 52s-56-20-56-52Z" fill="none" stroke="#d98a4e" stroke-opacity=".3" stroke-width="2"/>
+              <g stroke="#e0894c" stroke-width="7" stroke-linecap="round" opacity=".8">
+                <path d="M0-222v19"/><path d="M-19-219l6 17"/><path d="M19-219l-6 17"/>
+              </g>
+              <g stroke="#e0894c" stroke-width="4" stroke-linecap="round" opacity=".45">
+                <path d="M-50-176l9 3"/><path d="M-52-166l9 2"/>
+                <path d="M50-176l-9 3"/><path d="M52-166l-9 2"/>
+              </g>
+              <ellipse cx="0" cy="-148" rx="28" ry="20" fill="#fff1d9" opacity=".92"/>
+              <ellipse cx="-41" cy="-146" rx="10" ry="5.5" fill="#ff9aa8" opacity=".3"/>
+              <ellipse cx="41" cy="-146" rx="10" ry="5.5" fill="#ff9aa8" opacity=".3"/>
+
+              <g class="eyes-closed" stroke="#7a4a3a" stroke-width="5" fill="none" stroke-linecap="round">
+                <path d="M-38-172q11 12 22 0"/><path d="M16-172q11 12 22 0"/>
+              </g>
+              <g class="eyes-open">
+                <ellipse cx="-27" cy="-170" rx="9.6" ry="12.2" fill="#3b2a2c"/>
+                <ellipse cx="27" cy="-170" rx="9.6" ry="12.2" fill="#3b2a2c"/>
+                <path d="M-27-164a8 8 0 0 0 10 4" stroke="#c98a4a" stroke-width="2" fill="none" opacity=".55"/>
+                <path d="M27-164a8 8 0 0 1-10 4" stroke="#c98a4a" stroke-width="2" fill="none" opacity=".55"/>
+                <circle cx="-23.6" cy="-174.4" r="3.3" fill="#fff" opacity=".95"/>
+                <circle cx="30.4" cy="-174.4" r="3.3" fill="#fff" opacity=".95"/>
+                <circle cx="-30" cy="-166" r="1.5" fill="#fff" opacity=".5"/>
+                <circle cx="24" cy="-166" r="1.5" fill="#fff" opacity=".5"/>
+              </g>
+
+              <path d="M0-153c4 0 7 3 7 6s-3 5-7 5-7-2-7-5 3-6 7-6Z" fill="#ef8b98"/>
+              <path d="M0-142v5m0 0q-6 7-13 1m13-1q6 7 13 1" stroke="#8a5646" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+              <g stroke="#fff4e2" stroke-width="2" stroke-linecap="round" opacity=".5" fill="none">
+                <path d="M-26-152q-20-6-34-2"/><path d="M-27-146q-22 0-36 5"/><path d="M-26-140q-19 5-31 12"/>
+                <path d="M26-152q20-6 34-2"/><path d="M27-146q22 0 36 5"/><path d="M26-140q19 5 31 12"/>
+              </g>
+              <path d="M-53-190c-4-22 16-38 44-39" fill="none" stroke="#ffe3b8" stroke-opacity=".45" stroke-width="2.6" stroke-linecap="round"/>
+            </g>
+
+            <g class="zzz" fill="none" stroke="#ffe4b5" stroke-linecap="round" stroke-linejoin="round" transform="translate(66 -236)">
+              <path class="z z1" d="M0 0h13l-13 15h13" stroke-width="3"/>
+              <path class="z z2" d="M18-22h9l-9 10h9" stroke-width="2.6" opacity=".8"/>
+              <path class="z z3" d="M31-41h6l-6 7h6" stroke-width="2.2" opacity=".6"/>
+            </g>
+          </g>
+        </g>
+
+        <!-- 窗光落在地上 -->
+        <path d="M756 344h396l120 176H900Z" fill="#9db8ff" opacity=".035"/>
+      </svg>
+
+      <div class="scene-dim"></div>
+      <div class="scene-pill" id="scenePill"><i></i><span id="scenePillText">小猫已趴下 · 不打扰</span></div>
+      <div class="bubble" id="bubble" role="status" aria-live="polite"></div>
+    </section>
+
+    <section class="timer-card" id="timerCard">
+      <div class="timer-head">
+        <span class="phase"><i class="phase-dot"></i><span id="phaseLabel">准备好就开始</span></span>
+        <span class="round" id="roundLabel"></span>
+      </div>
+
+      <div class="timer-body">
+        <div class="clock" id="clock" aria-live="off">25:00</div>
+        <div class="timer-actions">
+          <div class="durations" id="durations" role="group" aria-label="专注时长">
+            <button type="button" data-min="15">15</button>
+            <button type="button" data-min="25">25</button>
+            <button type="button" data-min="40">40</button>
+          </div>
+          <button class="btn primary" id="startBtn" type="button">开始写作业</button>
+          <button class="btn ghost" id="stopBtn" type="button" hidden>结束</button>
+        </div>
+      </div>
+
+      <div class="track"><span class="track-fill" id="trackFill"></span></div>
+
+      <div class="timer-foot">
+        <p class="timer-hint" id="timerHint">点开始，小猫就趴下；时间到了它才轻轻叫你。</p>
+        <button class="link" id="companionBtn" type="button">今晚不计时，只让小猫陪着</button>
+      </div>
+    </section>
+
+    <div class="lower">
+      <section class="card tasks">
+        <div class="card-head">
+          <h2><svg aria-hidden="true"><use href="#i-check"/></svg>今晚的作业</h2>
+          <span class="count" id="taskCount">0 / 0</span>
+        </div>
+        <ul class="task-list" id="taskList"></ul>
+        <p class="task-empty" id="taskEmpty">还没写呢。把今晚的作业告诉小猫，它会记住。</p>
+        <form class="task-form" id="taskForm" autocomplete="off">
+          <input id="taskInput" type="text" maxlength="40" placeholder="比如：数学卷子第 3 页" aria-label="添加一项作业">
+          <button class="add-btn" type="submit" aria-label="添加">
+            <svg aria-hidden="true"><use href="#i-plus"/></svg>
+          </button>
+        </form>
+      </section>
+
+      <section class="card stats">
+        <div class="card-head">
+          <h2><svg aria-hidden="true"><use href="#i-fish"/></svg>小猫的记录</h2>
+        </div>
+        <div class="stat-grid">
+          <div class="stat">
+            <span class="stat-num" id="streakNum">0</span><span class="stat-suf">天</span>
+            <span class="stat-label">连续陪读</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num" id="todayNum">0</span><span class="stat-suf">条</span>
+            <span class="stat-label">今晚的小鱼</span>
+          </div>
+          <div class="stat wide">
+            <span class="stat-num" id="totalNum">0</span><span class="stat-suf">条</span>
+            <span class="stat-label">一共陪小鱼写完的轮数</span>
+          </div>
+        </div>
+        <div class="week">
+          <span class="week-label">最近七晚</span>
+          <div class="week-row" id="weekRow"></div>
+        </div>
+      </section>
+    </div>
+
+    <p class="pledge">小猫的承诺：不催你，不吵你，只在你开始和结束的时候出声。</p>
+  </main>
+</div>
+
+<dialog class="settings" id="settingsDlg">
+  <form id="settingsForm">
+    <h2>小猫的设置</h2>
+    <p class="dlg-sub">改完之后，小猫会一直记得。</p>
+
+    <label class="field">
+      <span>小鱼怎么称呼</span>
+      <input id="nameFish" type="text" maxlength="6" placeholder="小鱼">
+    </label>
+    <label class="field">
+      <span>小猫怎么称呼</span>
+      <input id="nameCat" type="text" maxlength="6" placeholder="小猫">
+    </label>
+
+    <div class="field">
+      <span>专注多久</span>
+      <div class="seg" role="radiogroup" aria-label="专注时长">
+        <label><input type="radio" name="focus" value="15"><span>15 分钟</span></label>
+        <label><input type="radio" name="focus" value="25"><span>25 分钟</span></label>
+        <label><input type="radio" name="focus" value="40"><span>40 分钟</span></label>
+      </div>
+    </div>
+
+    <div class="field">
+      <span>休息多久</span>
+      <div class="seg" role="radiogroup" aria-label="休息时长">
+        <label><input type="radio" name="rest" value="5"><span>5 分钟</span></label>
+        <label><input type="radio" name="rest" value="10"><span>10 分钟</span></label>
+      </div>
+    </div>
+
+    <label class="switch-row">
+      <span>结束时轻轻响一声</span>
+      <input id="soundToggle" type="checkbox">
+      <i class="switch" aria-hidden="true"></i>
+    </label>
+
+    <button class="danger" id="clearData" type="button">清空所有记录</button>
+
+    <div class="dlg-actions">
+      <button class="btn ghost" id="cancelSettings" type="button">取消</button>
+      <button class="btn primary" type="submit">保存</button>
+    </div>
+  </form>
+</dialog>
+
+<noscript><p class="noscript">小猫需要 JavaScript 才能动起来。</p></noscript>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
