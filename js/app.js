@@ -39,11 +39,12 @@ const el = {
   todayNum: $("#todayNum"),
   totalNum: $("#totalNum"),
   weekRow: $("#weekRow"),
-  foodNum: $("#foodNum"),
-  feedBtn: $("#feedBtn"),
+  foods: $("#foods"),
+  kibbleNum: $("#kibbleNum"),
+  stickNum: $("#stickNum"),
+  canNum: $("#canNum"),
   petBtn: $("#petBtn"),
   careNote: $("#careNote"),
-  foodBowl: $("#foodBowl"),
   petHearts: $("#petHearts"),
 
   settingsDlg: $("#settingsDlg"),
@@ -284,7 +285,8 @@ function applyMode() {
   }
 
   el.scene.dataset.cat = cfg.asleep ? "sleep" : "awake";
-  el.scene.classList.toggle("is-served", store.data.pendingFeed && !ui.eating);
+  if (store.data.pendingFeed) el.scene.dataset.food = store.data.pendingFeed;
+  el.scene.classList.toggle("is-served", !!store.data.pendingFeed && !ui.eating);
   if (wasAsleep && !cfg.asleep) {
     clearTimeout(ui.wakeId);
     el.cat.classList.remove("is-waking");
@@ -340,7 +342,7 @@ function applyMode() {
     b.classList.toggle("on", Number(b.dataset.min) === store.data.settings.focus);
   });
 
-  if (!cfg.asleep && store.data.pendingFeed && !ui.eating) eatNow();
+  if (!cfg.asleep && store.data.pendingFeed && !ui.eating) eatNow(store.data.pendingFeed);
 
   renderClock();
 }
@@ -427,7 +429,7 @@ function finishFocus(silent, startRest = true) {
   releaseWakeLock();
 
   store.addSession(ui.total / 60000);
-  store.data.food += 1;
+  store.data.foods.kibble += 1;
 
   if (!startRest) {
     ui.mode = "idle";
@@ -524,7 +526,7 @@ function stopCurrent() {
 
     if (elapsed >= 5 * 60000) {
       store.addSession(elapsed / 60000);
-      store.data.food += 1;
+      store.data.foods.kibble += 1;
       renderStats();
       renderBowl(true);
       renderCare();
@@ -747,18 +749,24 @@ function renderBowl(isNew) {
 /* ---------------- 摸一摸 / 喂小猫 ---------------- */
 
 function renderCare() {
-  el.foodNum.textContent = String(store.data.food);
+  const f = store.data.foods;
+  el.kibbleNum.textContent = String(f.kibble);
+  el.stickNum.textContent = String(f.stick);
+  el.canNum.textContent = String(f.can);
   el.careNote.textContent = `摸过 ${store.data.pets} 次 · 喂过 ${store.data.feeds} 次`;
 
-  const waiting = store.data.pendingFeed;
-  el.feedBtn.textContent = waiting ? "等它醒" : "喂小猫";
-  el.feedBtn.classList.toggle("is-empty", store.data.food <= 0 || waiting);
+  el.foods.classList.toggle("is-locked", !!store.data.pendingFeed);
+  el.foods.querySelectorAll(".food-btn").forEach((b) => {
+    b.classList.toggle("is-empty", f[b.dataset.food] <= 0);
+  });
 }
 
-function popFood() {
-  el.foodNum.classList.remove("is-pop");
-  void el.foodNum.offsetWidth;
-  el.foodNum.classList.add("is-pop");
+function popFood(type = "kibble") {
+  const node = el[`${type}Num`];
+  if (!node) return;
+  node.classList.remove("is-pop");
+  void node.offsetWidth;
+  node.classList.add("is-pop");
 }
 
 function spawnHearts(n = 1) {
@@ -825,40 +833,47 @@ function petBurst() {
   setTimeout(petEnd, 1200);
 }
 
-function eatNow() {
+function eatNow(type) {
   if (ui.eating) return;
+  const food = ["kibble", "stick", "can"].includes(type) ? type : "kibble";
 
-  store.data.pendingFeed = false;
+  clearTimeout(ui.bubbleId);
+  el.bubble.classList.remove("is-on");
+
+  store.data.pendingFeed = null;
   store.data.feeds += 1;
   store.save();
 
   el.scene.classList.remove("is-served");
+  el.scene.dataset.food = food;
   renderCare();
 
   ui.eating = true;
   el.scene.classList.add("is-eating");
   clearTimeout(ui.eatTimer);
+  const dur = food === "can" ? 4000 : food === "stick" ? 2600 : 3000;
   ui.eatTimer = setTimeout(() => {
     ui.eating = false;
     el.scene.classList.remove("is-eating");
-    spawnHearts(3);
-    say(fmt(pick(copy.feed)), 6200);
-  }, 3000);
+    spawnHearts(food === "can" ? 4 : 3);
+    say(fmt(pick(copy.feed[food])), 6200);
+  }, dur);
 }
 
-function feedCat() {
+function feedCat(type) {
   if (ui.eating) return;
+  const food = ["kibble", "stick", "can"].includes(type) ? type : "kibble";
 
   if (store.data.pendingFeed) {
     say(fmt(copy.feedWaiting), 5000);
     return;
   }
-  if (store.data.food <= 0) {
-    say(fmt(copy.feedEmpty), 6000);
+  if (store.data.foods[food] <= 0) {
+    say(fmt(copy.feedEmpty[food]), 6000);
     return;
   }
 
-  store.data.food -= 1;
+  store.data.foods[food] -= 1;
   store.save();
   renderCare();
 
@@ -866,15 +881,17 @@ function feedCat() {
     ui.mode === "focus" || ui.mode === "paused" || ui.mode === "companion" || ui.mode === "night";
 
   if (asleep) {
-    store.data.pendingFeed = true;
+    store.data.pendingFeed = food;
     store.save();
+    el.scene.dataset.food = food;
     el.scene.classList.add("is-served");
     renderCare();
-    say(fmt(ui.mode === "night" ? copy.feedServedNight : copy.feedServed), 6500);
+    const pool = ui.mode === "night" ? copy.feedServedNight : copy.feedServed;
+    say(fmt(pool[food]), 6500);
     return;
   }
 
-  eatNow();
+  eatNow(food);
 }
 
 /* ---------------- 设置 ---------------- */
@@ -1026,7 +1043,10 @@ function bind() {
   window.addEventListener("pointerup", petEnd);
   window.addEventListener("pointercancel", petEnd);
   el.petBtn.addEventListener("click", petBurst);
-  el.feedBtn.addEventListener("click", feedCat);
+  el.foods.addEventListener("click", (e) => {
+    const btn = e.target.closest(".food-btn");
+    if (btn) feedCat(btn.dataset.food);
+  });
 
   el.taskForm.addEventListener("submit", (e) => {
     e.preventDefault();

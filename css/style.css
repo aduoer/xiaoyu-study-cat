@@ -876,39 +876,68 @@ li:hover .del,
 
 .care {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 8px 10px;
+  flex-direction: column;
+  gap: 9px;
   margin-top: 12px;
 }
 
-.food-chip {
-  display: inline-flex;
-  align-items: center;
+.foods {
+  display: flex;
+  flex-wrap: wrap;
   gap: 6px;
-  font-size: 12.5px;
-  color: var(--muted);
-  white-space: nowrap;
 }
 
-.food-chip svg {
-  width: 17px;
-  height: 17px;
+.food-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  color: var(--cream);
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid var(--line);
+  transition: background 0.2s ease, transform 0.15s ease, opacity 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.food-btn svg {
+  width: 15px;
+  height: 15px;
   color: var(--gold);
   fill: currentColor;
 }
 
-.food-chip b {
-  display: inline-block;
-  font-size: 15px;
+.food-btn b {
+  font-size: 12.5px;
   font-weight: 600;
   color: var(--gold);
   font-variant-numeric: tabular-nums;
 }
 
-.food-chip b.is-pop {
+.food-btn b.is-pop {
   animation: foodPop 0.42s ease;
+}
+
+.food-btn:hover {
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.food-btn:active {
+  transform: scale(0.95);
+}
+
+.food-btn.is-empty {
+  opacity: 0.45;
+}
+
+.food-btn.is-empty b {
+  color: var(--muted2);
+}
+
+.foods.is-locked {
+  opacity: 0.55;
 }
 
 @keyframes foodPop {
@@ -921,9 +950,11 @@ li:hover .del,
   }
 }
 
-.care-actions {
+.care-foot {
   display: flex;
-  gap: 6px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
 }
 
 .mini-btn {
@@ -961,7 +992,7 @@ li:hover .del,
 }
 
 .care-note {
-  margin: 7px 0 0;
+  margin: 0;
   font-size: 10.5px;
   letter-spacing: 0.03em;
   color: var(--muted2);
@@ -1539,20 +1570,31 @@ li:hover .del,
 }
 
 /* 吃饭 */
-.food-bowl {
+.food-bowl,
+.food-can,
+.food-stick-desk,
+.food-stick-mouth {
   opacity: 0;
   transform: translateY(12px);
   transition: opacity 0.3s ease, transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.25);
   pointer-events: none;
 }
 
-.scene.is-eating .food-bowl,
-.scene.is-served .food-bowl {
+.scene[data-food="kibble"].is-eating .food-bowl,
+.scene[data-food="kibble"].is-served .food-bowl,
+.scene[data-food="can"].is-eating .food-can,
+.scene[data-food="can"].is-served .food-can,
+.scene[data-food="stick"].is-served .food-stick-desk {
   opacity: 1;
   transform: none;
 }
 
-.scene.is-eating .kibble {
+.scene[data-food="stick"].is-eating .food-stick-mouth {
+  opacity: 1;
+  transform: none;
+}
+
+.scene[data-food="kibble"].is-eating .kibble {
   animation: kibbleGone 2.8s steps(1) forwards;
 }
 
@@ -1569,6 +1611,23 @@ li:hover .del,
 
 .scene.is-eating .cat-head {
   animation: nibble 0.58s ease-in-out 3;
+}
+
+.scene[data-food="can"].is-eating .cat-head {
+  animation: nibble 0.7s ease-in-out 5;
+}
+
+.scene[data-food="stick"].is-eating .cat-head {
+  animation: lickHead 0.52s ease-in-out infinite;
+}
+
+.cat-tongue {
+  opacity: 0;
+}
+
+.scene[data-food="stick"].is-eating .cat-tongue {
+  opacity: 1;
+  animation: tongueLick 0.52s ease-in-out infinite;
 }
 
 .scene.is-eating .eyes-open {
@@ -1589,6 +1648,26 @@ li:hover .del,
   }
   70% {
     transform: rotate(1.5deg) translateY(3px);
+  }
+}
+
+@keyframes lickHead {
+  0%,
+  100% {
+    transform: rotate(2.4deg) translateY(0);
+  }
+  50% {
+    transform: rotate(-0.6deg) translateY(-3px);
+  }
+}
+
+@keyframes tongueLick {
+  0%,
+  100% {
+    transform: translateY(-1px) scaleY(0.8);
+  }
+  55% {
+    transform: translateY(2px) scaleY(1.15);
   }
 }
 

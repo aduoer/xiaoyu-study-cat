@@ -20,9 +20,9 @@ function fresh() {
     timer: null,
     companion: false,
     closedAt: null,
-    food: 3,
+    foods: { kibble: 3, stick: 1, can: 1 },
     foodDate: dayKey(),
-    pendingFeed: false,
+    pendingFeed: null,
     pets: 0,
     feeds: 0,
   };
@@ -71,16 +71,30 @@ export const store = {
       timer: raw.timer && typeof raw.timer === "object" ? raw.timer : null,
       companion: raw.companion === true,
       closedAt: typeof raw.closedAt === "string" ? raw.closedAt : null,
-      food: Number.isFinite(raw.food) ? Math.max(0, Math.floor(raw.food)) : 3,
+      foods: {
+        kibble: Number.isFinite(raw.foods?.kibble)
+          ? Math.max(0, Math.floor(raw.foods.kibble))
+          : Number.isFinite(raw.food)
+            ? Math.max(0, Math.floor(raw.food))
+            : 3,
+        stick: Number.isFinite(raw.foods?.stick) ? Math.max(0, Math.floor(raw.foods.stick)) : 1,
+        can: Number.isFinite(raw.foods?.can) ? Math.max(0, Math.floor(raw.foods.can)) : 1,
+      },
       foodDate: typeof raw.foodDate === "string" ? raw.foodDate : dayKey(),
-      pendingFeed: raw.pendingFeed === true,
+      pendingFeed: ["kibble", "stick", "can"].includes(raw.pendingFeed)
+        ? raw.pendingFeed
+        : raw.pendingFeed === true
+          ? "kibble"
+          : null,
       pets: Number.isFinite(raw.pets) ? Math.max(0, Math.floor(raw.pets)) : 0,
       feeds: Number.isFinite(raw.feeds) ? Math.max(0, Math.floor(raw.feeds)) : 0,
     };
 
-    // 每天早上猫粮袋自动补到 3 份，想喂的时候总有的喂
+    // 每天补货：猫粮 3 份、猫条 1 根、罐头 1 个，想喂的时候总有的喂
     if (this.data.foodDate !== dayKey()) {
-      this.data.food = Math.max(this.data.food, 3);
+      this.data.foods.kibble = Math.max(this.data.foods.kibble, 3);
+      this.data.foods.stick = Math.max(this.data.foods.stick, 1);
+      this.data.foods.can = Math.max(this.data.foods.can, 1);
       this.data.foodDate = dayKey();
     }
 
