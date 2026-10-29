@@ -23,6 +23,7 @@ function fresh() {
     foods: { kibble: 3, stick: 1, can: 1 },
     foodDate: dayKey(),
     pendingFeed: null,
+    lastGreet: null,
     pets: 0,
     feeds: 0,
   };
@@ -86,6 +87,7 @@ export const store = {
         : raw.pendingFeed === true
           ? "kibble"
           : null,
+      lastGreet: typeof raw.lastGreet === "string" ? raw.lastGreet : null,
       pets: Number.isFinite(raw.pets) ? Math.max(0, Math.floor(raw.pets)) : 0,
       feeds: Number.isFinite(raw.feeds) ? Math.max(0, Math.floor(raw.feeds)) : 0,
     };

@@ -1107,6 +1107,32 @@ function bind() {
   window.addEventListener("resize", fitScene);
 }
 
+/* 每天第一次打开时，先说一句关于上一次的话，再说今晚 */
+function dailyGreeting() {
+  const today = dayKey();
+  if (store.data.lastGreet === today) return null;
+  if (ui.mode === "night") return null;
+
+  store.data.lastGreet = today;
+  store.save();
+
+  const days = [...new Set(store.data.sessions.map((s) => s.d))].sort();
+  if (!days.length) return null;
+
+  const y = new Date();
+  y.setDate(y.getDate() - 1);
+  const yKey = dayKey(y);
+  const yCount = store.data.sessions.filter((s) => s.d === yKey).length;
+  if (yCount > 0) return { pool: copy.backYesterday, n: yCount };
+
+  const last = days[days.length - 1];
+  const gap = Math.round(
+    (new Date(`${today}T00:00:00`) - new Date(`${last}T00:00:00`)) / 86400000,
+  );
+  if (gap >= 2) return { pool: copy.backGap, n: gap };
+  return null;
+}
+
 function init() {
   store.load();
   updateToday();
@@ -1123,7 +1149,8 @@ function init() {
   if (!restored) {
     setTimeout(() => {
       if (ui.mode === "idle" && !el.bubble.classList.contains("is-on")) {
-        say(fmt(pick(copy.greet)), 11000);
+        const g = dailyGreeting() || { pool: copy.greet };
+        say(fmt(pick(g.pool), g), 11000);
       }
     }, 1500);
   }

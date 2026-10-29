@@ -1,5 +1,5 @@
 /* 让小鱼断网也能打开这张书桌 */
-const CACHE = "mao-yu-v5";
+const CACHE = "mao-yu-v7";
 const ASSETS = [
   "./",
   "./index.html",
@@ -38,13 +38,13 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
 
-  // 页面走网络优先，保证改了之后能看到新版
+  // 页面走网络优先，保证改完之后能看到新版
   if (req.mode === "navigate") {
     event.respondWith(
       fetch(req)
         .then((res) => {
-          const copy = res.clone();
-          caches.open(CACHE).then((cache) => cache.put(req, copy));
+          const dup = res.clone();
+          caches.open(CACHE).then((cache) => cache.put(req, dup));
           return res;
         })
         .catch(() => caches.match("./index.html")),
@@ -58,8 +58,8 @@ self.addEventListener("fetch", (event) => {
       const fresh = fetch(req)
         .then((res) => {
           if (res && res.status === 200) {
-            const copy = res.clone();
-            caches.open(CACHE).then((cache) => cache.put(req, copy));
+            const dup = res.clone();
+            caches.open(CACHE).then((cache) => cache.put(req, dup));
           }
           return res;
         })
